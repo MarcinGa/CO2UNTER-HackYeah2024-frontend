@@ -5,11 +5,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // Importowanie ekranów
 import IndividualScreen from './screens/IndividualScreen';
-import TransportForm from './screens/TransportForm'; // Nowy import
-import HomeEnergyForm from './screens/HomeEnergyForm'; // Nowy import
-import ConsumptionProductsForm from './screens/ConsumptionProductsForm'; // Nowy import
+import TransportForm from './screens/TransportForm';
+import HomeEnergyForm from './screens/HomeEnergyForm';
+import ConsumptionProductsForm from './screens/ConsumptionProductsForm';
 import ServicesScreen from './screens/ServicesScreen';
-import ConvertScreen from './screens/ConvertScreen';
+import ParksScreen from './screens/ParksScreen';
+import ParksCity from './screens/ParksCity'; // Nowy ekran parków miejskich
+import ParksPocket from './screens/ParksPocket'; // Nowy ekran parków kieszonkowych
 
 const HomeScreen = ({ navigation }) => {
   return (
@@ -19,9 +21,9 @@ const HomeScreen = ({ navigation }) => {
         style={styles.logo}
       />
       <Button title="Individual" onPress={() => navigation.navigate('Individual')} />
-      <Button title="Transport" onPress={() => navigation.navigate('Transport')} />
+      <Button title="Transport" onPress={() => navigation.navigate('TransportForm')} />
       <Button title="Services" onPress={() => navigation.navigate('Services')} />
-      <Button title="Convert" onPress={() => navigation.navigate('Convert')} />
+      <Button title="Parks" onPress={() => navigation.navigate('Parks')} /> {/* Zmiana z Convert na Parks */}
     </View>
   );
 };
@@ -39,7 +41,9 @@ export default function App() {
         <Stack.Screen name="HomeEnergyForm" component={HomeEnergyForm} />
         <Stack.Screen name="ConsumptionProductsForm" component={ConsumptionProductsForm} />
         <Stack.Screen name="Services" component={ServicesScreen} />
-        <Stack.Screen name="Convert" component={ConvertScreen} />
+        <Stack.Screen name="Parks" component={ParksScreen} /> 
+        <Stack.Screen name="ParksCity" component={ParksCity} />
+        <Stack.Screen name="ParksPocket" component={ParksPocket} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Picker } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Picker, Alert, FlatList } from 'react-native';
 
 const TransportForm = () => {
   const [vehicleType, setVehicleType] = useState('');
@@ -7,22 +7,67 @@ const TransportForm = () => {
   const [distance, setDistance] = useState('');
   const [averageConsumption, setAverageConsumption] = useState('');
   const [passengers, setPassengers] = useState('');
+  const [users, setUsers] = useState([]); // Stan dla pobranych danych
 
-  const handleSubmit = () => {
-    // Tutaj można dodać logikę obsługi formularza
-    console.log({
+  // Funkcja do pobrania użytkowników
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/data/users');
+      if (!response.ok) {
+        throw new Error('Błąd pobierania danych');
+      }
+      const data = await response.json();
+      setUsers(data); // Zapisanie pobranych danych w stanie
+    } catch (error) {
+      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
+    }
+  };
+
+  // Wywołujemy fetchUsers przy montowaniu komponentu
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleSubmit = async () => {
+    const formData = {
       vehicleType,
       fuelType,
       distance,
       averageConsumption,
       passengers,
-    });
+    };
+
+    try {
+      const response = await fetch('http://localhost:3000/data/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit the form');
+      }
+
+      const result = await response.json();
+      Alert.alert('Sukces!', 'Dane zostały przesłane.', [{ text: 'OK' }]);
+
+      setVehicleType('');
+      setFuelType('');
+      setDistance('');
+      setAverageConsumption('');
+      setPassengers('');
+    } catch (error) {
+      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Transport Form</Text>
       
+      {/* Formularz transportu */}
       <TextInput
         placeholder="Rodzaj pojazdu"
         value={vehicleType}
@@ -66,6 +111,19 @@ const TransportForm = () => {
       />
       
       <Button title="Submit" onPress={handleSubmit} />
+
+      {/* Wyświetlenie listy użytkowników */}
+      <Text style={styles.title}>Użytkownicy:</Text>
+      <FlatList
+        data={users}
+        keyExtractor={(item) => item._id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.userItem}>
+            <Text>{item.name}</Text>
+            <Text>{item.email}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 };
@@ -86,6 +144,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 15,
     paddingLeft: 10,
+  },
+  userItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
 });
 
