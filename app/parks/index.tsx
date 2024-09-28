@@ -1,8 +1,9 @@
 // screens/ParksScreen.js
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
 
-const ParksScreen = ({ navigation }) => {
+const ParksScreen = () => {
   return (
     <View style={styles.container}>
       <Button title="Parki miejskie" onPress={() => navigation.navigate('TownParks')} />

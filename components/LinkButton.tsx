@@ -3,15 +3,15 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 type LinkButtonProps = {
     route: Href,
-    text: string
+    children: React.ReactNode
 }
 
-export default function LinkButton({ route, text }: LinkButtonProps) {
+export default function LinkButton({ route, children }: LinkButtonProps) {
   const router = useRouter();
 
   return (
       <TouchableOpacity style={styles.button} onPress={() => router.push(route)}>
-        <Text style={styles.buttonText}>{ text }</Text>
+        <Text style={styles.buttonText}>{ children }</Text>
       </TouchableOpacity>
   );
 }

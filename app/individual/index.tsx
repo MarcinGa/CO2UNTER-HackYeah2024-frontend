@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 
-const IndividualScreen = ({ navigation }) => {
+import LinkButton from '@/components/LinkButton';
+
+const IndividualScreen = () => {
   return (
     <View style={styles.container}>
-      <Button title="Transport" onPress={() => navigation.navigate('TransportForm')} />
-      <Button title="Energia domowa" onPress={() => navigation.navigate('HomeEnergyForm')} />
-      <Button title="Produkty konsumpcyjne" onPress={() => navigation.navigate('ConsumptionProductsForm')} />
+      <LinkButton route="/transport">Transport</LinkButton>
+      <LinkButton route="/home-energy">Energia domowa</LinkButton>
+      <LinkButton route="/consumption">Transport</LinkButton>
     </View>
   );
 };
