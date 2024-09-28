@@ -1,12 +1,21 @@
 import React from 'react';
-import { View, Button, StyleSheet, Text } from 'react-native';
+import { View, Button, StyleSheet } from 'react-native';
 
 const ParksScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Wybierz typ parku:</Text>
-      <Button title="Parki Miejskie" onPress={() => navigation.navigate('ParksCity')} />
-      <Button title="Parki Kieszonkowe" onPress={() => navigation.navigate('ParksPocket')} />
+      <Button
+        title="Parki miejskie"
+        onPress={() => navigation.navigate('TownParks')}
+      />
+      <Button
+        title="Parki kieszonkowe"
+        onPress={() => navigation.navigate('PocketParks')}
+      />
+      <Button
+        title="Znajdź park"
+        onPress={() => navigation.navigate('PocketParkSearch')}
+      />
     </View>
   );
 };
@@ -16,13 +25,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
 });
 

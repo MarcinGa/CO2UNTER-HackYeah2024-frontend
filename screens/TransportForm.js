@@ -113,14 +113,17 @@ const TransportForm = () => {
       <Button title="Submit" onPress={handleSubmit} />
 
       {/* Wyświetlenie listy użytkowników */}
-      <Text style={styles.title}>Użytkownicy:</Text>
+      <Text style={styles.title}>Lista użytkowników:</Text>
       <FlatList
         data={users}
         keyExtractor={(item) => item._id.toString()}
         renderItem={({ item }) => (
           <View style={styles.userItem}>
-            <Text>{item.name}</Text>
-            <Text>{item.email}</Text>
+            <Text>Rodzaj pojazdu: {item.vehicleType}</Text>
+            <Text>Typ paliwa: {item.fuelType}</Text>
+            <Text>Przebyty dystans: {item.distance} km</Text>
+            <Text>Średnie spalanie: {item.averageConsumption} l/100km</Text>
+            <Text>Liczba pasażerów: {item.passengers}</Text>
           </View>
         )}
       />
