@@ -2,15 +2,16 @@ import { Href, useRouter } from 'expo-router';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 type LinkButtonProps = {
-    route: Href
+    route: Href,
+    text: string
 }
 
-export default function LinkButton({ route }: LinkButtonProps) {
+export default function LinkButton({ route, text }: LinkButtonProps) {
   const router = useRouter();
 
   return (
       <TouchableOpacity style={styles.button} onPress={() => router.push(route)}>
-        <Text style={styles.buttonText}>Przejdź do strony "O nas"</Text>
+        <Text style={styles.buttonText}>{ text }</Text>
       </TouchableOpacity>
   );
 }
