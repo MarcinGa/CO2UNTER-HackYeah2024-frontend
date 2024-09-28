@@ -3,14 +3,14 @@ import { View, Text, StyleSheet } from 'react-native';
 
 const TransportScreen = () => {
   return (
-    <View style={styles.center}>
-      <Text>Transport</Text>
+    <View style={styles.container}>
+      <Text>Transport Screen</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  center: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

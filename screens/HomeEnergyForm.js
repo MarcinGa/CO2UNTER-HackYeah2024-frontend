@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const ServicesScreen = () => {
+const HomeEnergyForm = () => {
   return (
     <View style={styles.container}>
-      <Text>Services Screen</Text>
+      <Text>Home Energy Form</Text>
     </View>
   );
 };
@@ -17,4 +17,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ServicesScreen;
+export default HomeEnergyForm;

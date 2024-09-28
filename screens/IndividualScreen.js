@@ -1,20 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Button, StyleSheet } from 'react-native';
 
-const IndywidualnieScreen = () => {
+const IndividualScreen = ({ navigation }) => {
   return (
-    <View style={styles.center}>
-      <Text>Indywidualnie</Text>
+    <View style={styles.container}>
+      <Button title="Transport" onPress={() => navigation.navigate('TransportForm')} />
+      <Button title="Energia domowa" onPress={() => navigation.navigate('HomeEnergyForm')} />
+      <Button title="Produkty konsumpcyjne" onPress={() => navigation.navigate('ConsumptionProductsForm')} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  center: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
 });
 
-export default IndywidualnieScreen;
+export default IndividualScreen;

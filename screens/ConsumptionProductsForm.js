@@ -1,20 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const PrzeliczScreen = () => {
+const ConsumptionProductsForm = () => {
   return (
-    <View style={styles.center}>
-      <Text>Przelicz</Text>
+    <View style={styles.container}>
+      <Text>Consumption Products Form</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  center: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
 });
 
-export default PrzeliczScreen;
+export default ConsumptionProductsForm;
