@@ -1,15 +1,16 @@
 // screens/ParksScreen.js
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
-import { router } from 'expo-router';
+// import { router } from 'expo-router';
+import LinkButton from '@/components/LinkButton';
 
 const ParksScreen = () => {
   return (
     <View style={styles.container}>
-      <Button title="Parki miejskie" onPress={() => navigation.navigate('TownParks')} />
-      <Button title="Parki kieszonkowe" onPress={() => navigation.navigate('PocketParks')} />
-      <Button title="Znajdź park kieszonkowy" onPress={() => navigation.navigate('PocketParkSearch')} />
-      <Button title="Znajdź park miejski" onPress={() => navigation.navigate('TownParkSearch')} />
+      <LinkButton route="/parks/town-parks">Parki miejskie</LinkButton>
+      <LinkButton route="/parks/pocket-parks">Parki kieszonkowe</LinkButton>
+      <LinkButton route="/parks/pocket-park-search">Znajdź park kieszonkowy</LinkButton>
+      <LinkButton route="/parks/town-park-search">Znajdź park kieszonkowy</LinkButton>
     </View>
   );
 };
