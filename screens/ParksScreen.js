@@ -5,9 +5,10 @@ import { View, Button, StyleSheet } from 'react-native';
 const ParksScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Button title="Town Parks" onPress={() => navigation.navigate('TownParks')} />
-      <Button title="Pocket Parks" onPress={() => navigation.navigate('PocketParks')} />
-      <Button title="Find Pocket Park" onPress={() => navigation.navigate('PocketParkSearch')} />
+      <Button title="Parki miejskie" onPress={() => navigation.navigate('TownParks')} />
+      <Button title="Parki kieszonkowe" onPress={() => navigation.navigate('PocketParks')} />
+      <Button title="Znajdź park kieszonkowy" onPress={() => navigation.navigate('PocketParkSearch')} />
+      <Button title="Znajdź park miejski" onPress={() => navigation.navigate('PocketParkSearch')} />
     </View>
   );
 };

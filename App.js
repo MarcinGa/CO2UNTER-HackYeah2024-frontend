@@ -21,10 +21,12 @@ const Stack = createNativeStackNavigator();
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Button title="Parks" onPress={() => navigation.navigate('Parks')} />
-      <Button title="Individual" onPress={() => navigation.navigate('Individual')} />
-      <Button title="Transport" onPress={() => navigation.navigate('TransportForm')} />
-      <Button title="Services" onPress={() => navigation.navigate('Services')} />
+      <h1>Przelicz produkcję CO2</h1>
+      <Button title="Indywidualnie" onPress={() => navigation.navigate('Individual')} />
+
+      <h2>Sprawdź dostępne dane</h2>
+      <Button title="Parki" onPress={() => navigation.navigate('Parks')} />
+      <Button title="Usługi" onPress={() => navigation.navigate('Services')} />
     </View>
   );
 };
