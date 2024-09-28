@@ -43,12 +43,12 @@ const PocketParkSearchScreen = () => {
   return (
     <View style={styles.container}>
       <TextInput
-        placeholder="Name"
+        placeholder="Nazwa"
         value={name}
         onChangeText={setName}
         style={styles.input}
       />
-      <Button title="Search by Name" onPress={handleSearchByName} />
+      <Button title="Wyszukaj po nazwie" onPress={handleSearchByName} />
 
       <TextInput
         placeholder="Status"
@@ -56,31 +56,31 @@ const PocketParkSearchScreen = () => {
         onChangeText={setStatus}
         style={styles.input}
       />
-      <Button title="Search by Status" onPress={handleSearchByStatus} />
+      <Button title="Wyszukaj po statusie" onPress={handleSearchByStatus} />
 
       <TextInput
-        placeholder="District"
+        placeholder="Dzielnica"
         value={district}
         onChangeText={setDistrict}
         style={styles.input}
       />
-      <Button title="Search by District" onPress={handleSearchByDistrict} />
+      <Button title="Wyszukaj po dzielnicy" onPress={handleSearchByDistrict} />
 
       <TextInput
-        placeholder="Accessibility"
+        placeholder="Dostępność"
         value={accessibility}
         onChangeText={setAccessibility}
         style={styles.input}
       />
-      <Button title="Search by Accessibility" onPress={handleSearchByAccessibility} />
+      <Button title="Wyszukaj po dostępności" onPress={handleSearchByAccessibility} />
 
       <TextInput
-        placeholder="Type"
+        placeholder="Typ"
         value={type}
         onChangeText={setType}
         style={styles.input}
       />
-      <Button title="Search by Type" onPress={handleSearchByType} />
+      <Button title="Wyszukaj po typie" onPress={handleSearchByType} />
 
       <FlatList
         data={results}

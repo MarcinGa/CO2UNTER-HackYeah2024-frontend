@@ -12,7 +12,8 @@ import ServicesScreen from './screens/ServicesScreen';
 import ParksScreen from './screens/ParksScreen';
 import TownParks from './screens/parks/TownParks';
 import PocketParks from './screens/parks/PocketParks';
-import PocketParkSearchScreen from './screens/forms/PocketParkSearchScreen';
+import PocketParkSearchScreen from './screens/PocketParkSearchScreen';
+import TownParkSearchScreen from './screens/TownParkSearchScreen';
 
 // Tworzenie stack navigatora
 const Stack = createNativeStackNavigator();
@@ -21,10 +22,10 @@ const Stack = createNativeStackNavigator();
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <h1>Przelicz produkcję CO2</h1>
+      <Text>Przelicz produkcję CO2</Text>
       <Button title="Indywidualnie" onPress={() => navigation.navigate('Individual')} />
 
-      <h2>Sprawdź dostępne dane</h2>
+      <Text>Sprawdź dostępne dane</Text>
       <Button title="Parki" onPress={() => navigation.navigate('Parks')} />
       <Button title="Usługi" onPress={() => navigation.navigate('Services')} />
     </View>
@@ -45,6 +46,7 @@ export default function App() {
         <Stack.Screen name="TownParks" component={TownParks} />
         <Stack.Screen name="PocketParks" component={PocketParks} />
         <Stack.Screen name="PocketParkSearch" component={PocketParkSearchScreen} />
+        <Stack.Screen name="TownParkSearch" component={TownParkSearchScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

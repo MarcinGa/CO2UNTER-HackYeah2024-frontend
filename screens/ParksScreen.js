@@ -8,7 +8,7 @@ const ParksScreen = ({ navigation }) => {
       <Button title="Parki miejskie" onPress={() => navigation.navigate('TownParks')} />
       <Button title="Parki kieszonkowe" onPress={() => navigation.navigate('PocketParks')} />
       <Button title="Znajdź park kieszonkowy" onPress={() => navigation.navigate('PocketParkSearch')} />
-      <Button title="Znajdź park miejski" onPress={() => navigation.navigate('PocketParkSearch')} />
+      <Button title="Znajdź park miejski" onPress={() => navigation.navigate('TownParkSearch')} />
     </View>
   );
 };
