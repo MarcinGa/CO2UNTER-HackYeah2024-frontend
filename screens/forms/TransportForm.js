@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Picker, Alert, FlatList } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Picker, Alert, FlatList, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
 const TransportForm = () => {
   const [vehicleType, setVehicleType] = useState('');
@@ -7,9 +8,11 @@ const TransportForm = () => {
   const [distance, setDistance] = useState('');
   const [averageConsumption, setAverageConsumption] = useState('');
   const [passengers, setPassengers] = useState('');
+  const [timePeriod, setTimePeriod] = useState('');
+  const [userId, setUserId] = useState(null); // Przechowuje ID użytkownika
   const [users, setUsers] = useState([]); // Stan dla pobranych danych
 
-  // Funkcja do pobrania użytkowników
+  // Funkcja do pobrania użytkowników (jeśli potrzebujesz pobierać listę użytkowników)
   const fetchUsers = async () => {
     try {
       const response = await fetch('http://localhost:3000/data/users');
@@ -26,7 +29,32 @@ const TransportForm = () => {
   // Wywołujemy fetchUsers przy montowaniu komponentu
   useEffect(() => {
     fetchUsers();
+
+    // Przy każdym uruchomieniu aplikacji, próbujemy załadować ID użytkownika z AsyncStorage
+    loadUserIdFromStorage();
   }, []);
+
+  // Funkcja do załadowania ID użytkownika z AsyncStorage
+  const loadUserIdFromStorage = async () => {
+    try {
+      const storedUserId = await AsyncStorage.getItem('userId');
+      if (storedUserId) {
+        setUserId(storedUserId); // Ustawienie ID użytkownika, jeśli istnieje w AsyncStorage
+      }
+    } catch (error) {
+      console.error('Error loading user ID:', error);
+    }
+  };
+
+  // Funkcja do zapisania ID użytkownika do AsyncStorage
+  const saveUserIdToStorage = async (id) => {
+    try {
+      await AsyncStorage.setItem('userId', id);
+      setUserId(id); // Zapisujemy ID również w stanie komponentu
+    } catch (error) {
+      console.error('Error saving user ID:', error);
+    }
+  };
 
   const handleSubmit = async () => {
     const formData = {
@@ -35,9 +63,11 @@ const TransportForm = () => {
       distance,
       averageConsumption,
       passengers,
+      timePeriod,
     };
 
     try {
+      // 1. Wysłanie danych formularza na endpoint /data/user
       const response = await fetch('http://localhost:3000/data/user', {
         method: 'POST',
         headers: {
@@ -51,22 +81,30 @@ const TransportForm = () => {
       }
 
       const result = await response.json();
-      Alert.alert('Sukces!', 'Dane zostały przesłane.', [{ text: 'OK' }]);
+      const newUserId = result._id; // Otrzymane ID nowego użytkownika z odpowiedzi
 
+      // Zapisujemy ID nowego użytkownika w AsyncStorage
+      await saveUserIdToStorage(newUserId);
+
+      Alert.alert('Sukces!', 'Dane formularza zostały przesłane.', [{ text: 'OK' }]);
+
+      // Resetowanie wartości formularza
       setVehicleType('');
       setFuelType('');
       setDistance('');
       setAverageConsumption('');
       setPassengers('');
+      setTimePeriod('');
+
     } catch (error) {
       Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
     }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Transport Form</Text>
-      
+
       {/* Formularz transportu */}
       <TextInput
         placeholder="Rodzaj pojazdu"
@@ -74,7 +112,7 @@ const TransportForm = () => {
         onChangeText={setVehicleType}
         style={styles.input}
       />
-      
+
       <Picker
         selectedValue={fuelType}
         onValueChange={(itemValue) => setFuelType(itemValue)}
@@ -93,7 +131,7 @@ const TransportForm = () => {
         keyboardType="numeric"
         style={styles.input}
       />
-      
+
       <TextInput
         placeholder="Średnie spalanie (l/100km)"
         value={averageConsumption}
@@ -101,7 +139,7 @@ const TransportForm = () => {
         keyboardType="numeric"
         style={styles.input}
       />
-      
+
       <TextInput
         placeholder="Liczba pasażerów"
         value={passengers}
@@ -109,16 +147,33 @@ const TransportForm = () => {
         keyboardType="numeric"
         style={styles.input}
       />
-      
+
+      <Picker
+        selectedValue={timePeriod}
+        onValueChange={(itemValue) => setTimePeriod(itemValue)}
+        style={styles.input}
+      >
+        <Picker.Item label="Wybierz okres czasu" value="" />
+        <Picker.Item label="1 dzień" value="1dzien" />
+        <Picker.Item label="1 tydzień" value="1tydzien" />
+        <Picker.Item label="1 miesiąc" value="1miesiac" />
+      </Picker>
+
       <Button title="Submit" onPress={handleSubmit} />
 
-      {/* Wyświetlenie listy użytkowników */}
+      {/* Wyświetlenie ID użytkownika, jeśli istnieje */}
+      {userId && (
+        <Text style={styles.title}>Twoje ID: {userId}</Text>
+      )}
+
+      {/* Wyświetlenie listy użytkowników (jeśli potrzebujesz) */}
       <Text style={styles.title}>Lista użytkowników:</Text>
       <FlatList
         data={users}
         keyExtractor={(item) => item._id.toString()}
         renderItem={({ item }) => (
           <View style={styles.userItem}>
+            <Text>{item._id}</Text>
             <Text>Rodzaj pojazdu: {item.vehicleType}</Text>
             <Text>Typ paliwa: {item.fuelType}</Text>
             <Text>Przebyty dystans: {item.distance} km</Text>
@@ -127,13 +182,13 @@ const TransportForm = () => {
           </View>
         )}
       />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
     backgroundColor: '#fff',
   },
