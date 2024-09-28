@@ -1,7 +1,11 @@
-import { useRouter } from 'expo-router';
+import { Href, useRouter } from 'expo-router';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-export default function LinkButton({ route: }) {
+type LinkButtonProps = {
+    route: Href
+}
+
+export default function LinkButton({ route }: LinkButtonProps) {
   const router = useRouter();
 
   return (
