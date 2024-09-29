@@ -26,6 +26,18 @@ export default function TabTwoScreen() {
         title="Transport"
         description="Oblicz emisję środków transportu"
       ></LinkCard>
+      <LinkCard
+        route="/transport"
+        icon="car"
+        title="Transport"
+        description="Oblicz emisję środków transportu"
+      ></LinkCard>
+      <LinkCard
+        route="/transport"
+        icon="car"
+        title="Transport"
+        description="Oblicz emisję środków transportu"
+      ></LinkCard>
     </ParallaxScrollView>
   );
 }

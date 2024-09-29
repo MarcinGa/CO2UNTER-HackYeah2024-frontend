@@ -1,25 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, FlatList, ScrollView } from 'react-native';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  FlatList,
+  ScrollView,
+} from "react-native";
 
 const EventForm = () => {
-  const [name, setName] = useState('');
-  const [type, setType] = useState('');
-  const [location, setLocation] = useState('');
-  const [attendees, setAttendees] = useState('');
+  const [name, setName] = useState("");
+  const [type, setType] = useState("");
+  const [location, setLocation] = useState("");
+  const [attendees, setAttendees] = useState("");
   const [eventId, setEventId] = useState(null); // Przechowuje ID wydarzenia
   const [events, setEvents] = useState([]); // Stan dla pobranych wydarzeń
 
   // Pobranie wydarzeń
   const fetchEvents = async () => {
     try {
-      const response = await fetch('http://localhost:3000/events');
+      const response = await fetch(
+        "https://co2unter-hackyeah2024-backend.onrender.com/events"
+      );
       if (!response.ok) {
-        throw new Error('Błąd pobierania danych');
+        throw new Error("Błąd pobierania danych");
       }
       const data = await response.json();
       setEvents(data); // Zapisanie pobranych danych w stanie
     } catch (error) {
-      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
+      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
     }
   };
 
@@ -40,31 +51,39 @@ const EventForm = () => {
 
       if (eventId) {
         // Jeśli istnieje eventId, aktualizujemy wydarzenie
-        response = await fetch(`http://localhost:3000/events/${eventId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
+        response = await fetch(
+          `https://co2unter-hackyeah2024-backend.onrender.com/events/${eventId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Failed to update the event');
+          throw new Error("Failed to update the event");
         }
 
-        Alert.alert('Sukces!', 'Dane wydarzenia zostały zaktualizowane.', [{ text: 'OK' }]);
+        Alert.alert("Sukces!", "Dane wydarzenia zostały zaktualizowane.", [
+          { text: "OK" },
+        ]);
       } else {
         // Tworzenie nowego wydarzenia
-        response = await fetch('http://localhost:3000/events', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
+        response = await fetch(
+          "https://co2unter-hackyeah2024-backend.onrender.com/events",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Failed to submit the event');
+          throw new Error("Failed to submit the event");
         }
 
         const result = await response.json();
@@ -72,20 +91,19 @@ const EventForm = () => {
 
         setEventId(newEventId); // Ustawienie nowego ID w stanie
 
-        Alert.alert('Sukces!', 'Wydarzenie zostało dodane.', [{ text: 'OK' }]);
+        Alert.alert("Sukces!", "Wydarzenie zostało dodane.", [{ text: "OK" }]);
       }
 
       // Resetowanie formularza
-      setName('');
-      setType('');
-      setLocation('');
-      setAttendees('');
+      setName("");
+      setType("");
+      setLocation("");
+      setAttendees("");
 
       // Ponowne pobranie listy wydarzeń
       fetchEvents();
-
     } catch (error) {
-      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
+      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
     }
   };
 
@@ -146,7 +164,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
@@ -154,7 +172,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     marginBottom: 15,
     paddingLeft: 10,
@@ -162,7 +180,7 @@ const styles = StyleSheet.create({
   eventItem: {
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
 });
 

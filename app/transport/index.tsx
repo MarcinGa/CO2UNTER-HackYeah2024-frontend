@@ -1,29 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, FlatList, ScrollView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
-import { Picker } from '@react-native-picker/picker';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  FlatList,
+  ScrollView,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import { Picker } from "@react-native-picker/picker";
 
 const TransportForm = () => {
-  const [vehicleType, setVehicleType] = useState('');
-  const [fuelType, setFuelType] = useState('');
-  const [distance, setDistance] = useState('');
-  const [averageConsumption, setAverageConsumption] = useState('');
-  const [passengers, setPassengers] = useState('');
-  const [timePeriod, setTimePeriod] = useState('');
+  const [vehicleType, setVehicleType] = useState("");
+  const [fuelType, setFuelType] = useState("");
+  const [distance, setDistance] = useState("");
+  const [averageConsumption, setAverageConsumption] = useState("");
+  const [passengers, setPassengers] = useState("");
+  const [timePeriod, setTimePeriod] = useState("");
   const [userId, setUserId] = useState(null); // Przechowuje ID użytkownika
   const [users, setUsers] = useState([]); // Stan dla pobranych danych
 
   // Funkcja do pobrania użytkowników (jeśli potrzebujesz pobierać listę użytkowników)
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:3000/data/users');
+      const response = await fetch(
+        "https://co2unter-hackyeah2024-backend.onrender.com/data/users"
+      );
       if (!response.ok) {
-        throw new Error('Błąd pobierania danych');
+        throw new Error("Błąd pobierania danych");
       }
       const data = await response.json();
       setUsers(data); // Zapisanie pobranych danych w stanie
     } catch (error) {
-      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
+      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
     }
   };
 
@@ -38,22 +49,22 @@ const TransportForm = () => {
   // Funkcja do załadowania ID użytkownika z AsyncStorage
   const loadUserIdFromStorage = async () => {
     try {
-      const storedUserId = await AsyncStorage.getItem('userId');
+      const storedUserId = await AsyncStorage.getItem("userId");
       if (storedUserId) {
         setUserId(storedUserId); // Ustawienie ID użytkownika, jeśli istnieje w AsyncStorage
       }
     } catch (error) {
-      console.error('Error loading user ID:', error);
+      console.error("Error loading user ID:", error);
     }
   };
 
   // Funkcja do zapisania ID użytkownika do AsyncStorage
   const saveUserIdToStorage = async (id) => {
     try {
-      await AsyncStorage.setItem('userId', id);
+      await AsyncStorage.setItem("userId", id);
       setUserId(id); // Zapisujemy ID również w stanie komponentu
     } catch (error) {
-      console.error('Error saving user ID:', error);
+      console.error("Error saving user ID:", error);
     }
   };
 
@@ -72,32 +83,39 @@ const TransportForm = () => {
 
       if (userId) {
         // Jeśli istnieje userId, wyślij żądanie PUT do aktualizacji istniejącego użytkownika
-        response = await fetch(`http://localhost:3000/data/user/${userId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
+        response = await fetch(
+          `https://co2unter-hackyeah2024-backend.onrender.com/data/user/${userId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Failed to update the form');
+          throw new Error("Failed to update the form");
         }
 
-        Alert.alert('Sukces!', 'Dane użytkownika zostały zaktualizowane.', [{ text: 'OK' }]);
-
+        Alert.alert("Sukces!", "Dane użytkownika zostały zaktualizowane.", [
+          { text: "OK" },
+        ]);
       } else {
         // Jeśli nie ma userId, wyślij żądanie POST do stworzenia nowego użytkownika
-        response = await fetch('http://localhost:3000/data/user', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
+        response = await fetch(
+          "https://co2unter-hackyeah2024-backend.onrender.com/data/user",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Failed to submit the form');
+          throw new Error("Failed to submit the form");
         }
 
         const result = await response.json();
@@ -106,19 +124,20 @@ const TransportForm = () => {
         // Zapisujemy ID nowego użytkownika w AsyncStorage
         await saveUserIdToStorage(newUserId);
 
-        Alert.alert('Sukces!', 'Dane formularza zostały przesłane.', [{ text: 'OK' }]);
+        Alert.alert("Sukces!", "Dane formularza zostały przesłane.", [
+          { text: "OK" },
+        ]);
       }
 
       // Resetowanie wartości formularza
-      setVehicleType('');
-      setFuelType('');
-      setDistance('');
-      setAverageConsumption('');
-      setPassengers('');
-      setTimePeriod('');
-
+      setVehicleType("");
+      setFuelType("");
+      setDistance("");
+      setAverageConsumption("");
+      setPassengers("");
+      setTimePeriod("");
     } catch (error) {
-      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
+      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
     }
   };
 
@@ -183,9 +202,7 @@ const TransportForm = () => {
       <Button title="Submit" onPress={handleSubmit} />
 
       {/* Wyświetlenie ID użytkownika, jeśli istnieje */}
-      {userId && (
-        <Text style={styles.title}>Twoje ID: {userId}</Text>
-      )}
+      {userId && <Text style={styles.title}>Twoje ID: {userId}</Text>}
 
       {/* Wyświetlenie listy użytkowników (jeśli potrzebujesz) */}
       <Text style={styles.title}>Lista użytkowników:</Text>
@@ -211,7 +228,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
@@ -219,7 +236,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     marginBottom: 15,
     paddingLeft: 10,
@@ -227,7 +244,7 @@ const styles = StyleSheet.create({
   userItem: {
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
 });
 

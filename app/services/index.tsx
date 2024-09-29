@@ -1,24 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  ScrollView,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 
 const ServicesScreen = () => {
   const [userId, setUserId] = useState(null); // Przechowuje ID użytkownika
-  const [eatingOutFrequency, setEatingOutFrequency] = useState('');
-  const [useOfDisposableUtensils, setUseOfDisposableUtensils] = useState('');
-  const [hotelUsageFrequency, setHotelUsageFrequency] = useState('');
-  const [shoppingFrequency, setShoppingFrequency] = useState('');
+  const [eatingOutFrequency, setEatingOutFrequency] = useState("");
+  const [useOfDisposableUtensils, setUseOfDisposableUtensils] = useState("");
+  const [hotelUsageFrequency, setHotelUsageFrequency] = useState("");
+  const [shoppingFrequency, setShoppingFrequency] = useState("");
 
   // Funkcja do załadowania ID użytkownika z AsyncStorage
   const loadUserIdFromStorage = async () => {
     try {
-      const storedUserId = await AsyncStorage.getItem('userId');
+      const storedUserId = await AsyncStorage.getItem("userId");
       if (storedUserId) {
         setUserId(storedUserId); // Ustawienie ID użytkownika, jeśli istnieje w AsyncStorage
         fetchServiceData(storedUserId); // Pobranie danych z serwisu dla użytkownika
       }
     } catch (error) {
-      console.error('Error loading user ID:', error);
+      console.error("Error loading user ID:", error);
     }
   };
 
@@ -29,9 +37,11 @@ const ServicesScreen = () => {
   // Funkcja GET do pobrania danych z serwera
   const fetchServiceData = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:3000/users/${userId}/service-sector`);
+      const response = await fetch(
+        `https://co2unter-hackyeah2024-backend.onrender.com/users/${userId}/service-sector`
+      );
       if (!response.ok) {
-        throw new Error('Błąd podczas pobierania danych sektora usług');
+        throw new Error("Błąd podczas pobierania danych sektora usług");
       }
       const data = await response.json();
       // Ustaw dane sektora usług w stanie
@@ -40,7 +50,7 @@ const ServicesScreen = () => {
       setHotelUsageFrequency(data.hotelUsageFrequency.toString());
       setShoppingFrequency(data.shoppingFrequency.toString());
     } catch (error) {
-      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
+      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
     }
   };
 
@@ -57,35 +67,45 @@ const ServicesScreen = () => {
       let response;
       if (userId) {
         // Jeśli istnieje userId, sprawdź, czy dane sektora usług są już zapisane
-        const getResponse = await fetch(`http://localhost:3000/users/${userId}/service-sector`);
+        const getResponse = await fetch(
+          `https://co2unter-hackyeah2024-backend.onrender.com/users/${userId}/service-sector`
+        );
         if (getResponse.ok) {
           // Dane sektora usług już istnieją, wykonaj PUT (aktualizacja)
-          response = await fetch(`http://localhost:3000/users/${userId}/service-sector`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          });
+          response = await fetch(
+            `https://co2unter-hackyeah2024-backend.onrender.com/users/${userId}/service-sector`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            }
+          );
         } else {
           // Dane nie istnieją, wykonaj POST (tworzenie)
-          response = await fetch(`http://localhost:3000/users/${userId}/service-sector`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          });
+          response = await fetch(
+            `https://co2unter-hackyeah2024-backend.onrender.com/users/${userId}/service-sector`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            }
+          );
         }
 
         if (!response.ok) {
-          throw new Error('Błąd podczas przesyłania danych sektora usług');
+          throw new Error("Błąd podczas przesyłania danych sektora usług");
         }
 
-        Alert.alert('Sukces!', 'Dane sektora usług zostały zapisane.', [{ text: 'OK' }]);
+        Alert.alert("Sukces!", "Dane sektora usług zostały zapisane.", [
+          { text: "OK" },
+        ]);
       }
     } catch (error) {
-      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
+      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
     }
   };
 
@@ -94,9 +114,7 @@ const ServicesScreen = () => {
       <Text style={styles.title}>Service Sector Form</Text>
 
       {/* Wyświetlenie userId */}
-      {userId && (
-        <Text style={styles.userIdText}>User ID: {userId}</Text>
-      )}
+      {userId && <Text style={styles.userIdText}>User ID: {userId}</Text>}
 
       <TextInput
         placeholder="Częstotliwość jedzenia na zewnątrz"
@@ -138,7 +156,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
@@ -146,7 +164,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     marginBottom: 15,
     paddingLeft: 10,
@@ -154,7 +172,7 @@ const styles = StyleSheet.create({
   userIdText: {
     fontSize: 16,
     marginBottom: 20,
-    color: 'blue', // Styl dla lepszego wyróżnienia
+    color: "blue", // Styl dla lepszego wyróżnienia
   },
 });
 
