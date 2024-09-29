@@ -1,32 +1,26 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  Alert,
-  ScrollView,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
 
-const ServicesScreen = ({ eventId }) => { // Dodaj eventId jako prop
-  const [userId, setUserId] = useState(null); // Przechowuje ID użytkownika
-  const [eatingOutFrequency, setEatingOutFrequency] = useState("");
-  const [useOfDisposableUtensils, setUseOfDisposableUtensils] = useState("");
-  const [hotelUsageFrequency, setHotelUsageFrequency] = useState("");
-  const [shoppingFrequency, setShoppingFrequency] = useState("");
+const TransportForm = ({ onSubmit }) => {
+  const [vehicleType, setVehicleType] = useState('');
+  const [fuelType, setFuelType] = useState('');
+  const [distance, setDistance] = useState('');
+  const [averageConsumption, setAverageConsumption] = useState('');
+  const [passengers, setPassengers] = useState('');
+  const [timePeriod, setTimePeriod] = useState('');
+  const [userId, setUserId] = useState(null);
+  const [emissionResult, setEmissionResult] = useState(null);
 
-  // Funkcja do załadowania ID użytkownika z AsyncStorage
   const loadUserIdFromStorage = async () => {
     try {
-      const storedUserId = await AsyncStorage.getItem("userId");
+      const storedUserId = await AsyncStorage.getItem('userId');
       if (storedUserId) {
-        setUserId(storedUserId); // Ustawienie ID użytkownika, jeśli istnieje w AsyncStorage
-        fetchServiceData(storedUserId); // Pobranie danych z serwisu dla użytkownika
+        setUserId(storedUserId);
       }
     } catch (error) {
-      console.error("Error loading user ID:", error);
+      console.error('Error loading user ID:', error);
     }
   };
 
@@ -34,152 +28,188 @@ const ServicesScreen = ({ eventId }) => { // Dodaj eventId jako prop
     loadUserIdFromStorage();
   }, []);
 
-  // Funkcja GET do pobrania danych z serwera
-  const fetchServiceData = async (userId) => {
+  const checkUserExists = async (userId) => {
     try {
-      const response = await fetch(
-        `https://co2unter-hackyeah2024-backend.onrender.com/data/users/${userId}/service-sector`
-      );
-      if (!response.ok) {
-        throw new Error("Błąd podczas pobierania danych sektora usług");
-      }
-      const data = await response.json();
-      // Ustaw dane sektora usług w stanie
-      setEatingOutFrequency(data.eatingOutFrequency.toString());
-      setUseOfDisposableUtensils(data.useOfDisposableUtensils);
-      setHotelUsageFrequency(data.hotelUsageFrequency.toString());
-      setShoppingFrequency(data.shoppingFrequency.toString());
+      const response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return response.ok; // Zwracamy true, jeśli użytkownik istnieje
     } catch (error) {
-      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
+      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
+      return false;
     }
   };
 
-  // Funkcja POST/PUT do wysłania danych na serwer
-  const handleSubmit = async () => {
-    const formData = {
-      eatingOutFrequency: Number(eatingOutFrequency),
-      useOfDisposableUtensils,
-      hotelUsageFrequency: Number(hotelUsageFrequency),
-      shoppingFrequency: Number(shoppingFrequency),
-    };
-
-    try {
-      let response;
-      if (userId) {
-        // Jeśli istnieje userId, sprawdź, czy dane sektora usług są już zapisane
-        const getResponse = await fetch(
-          `https://co2unter-hackyeah2024-backend.onrender.com/data/users/${userId}/service-sector`
-        );
-        
-        if (getResponse.ok) {
-          // Dane sektora usług już istnieją, wykonaj PUT (aktualizacja)
-          response = await fetch(
-            `https://co2unter-hackyeah2024-backend.onrender.com/data/users/${userId}/service-sector`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(formData),
-            }
-          );
-        } else {
-          // Dane nie istnieją, wykonaj POST (tworzenie)
-          response = await fetch(
-            `https://co2unter-hackyeah2024-backend.onrender.com/data/users/${userId}/service-sector`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(formData),
-            }
-          );
-        }
-
-        if (!response.ok) {
-          throw new Error("Błąd podczas przesyłania danych sektora usług");
-        }
-
-        Alert.alert("Sukces!", "Dane sektora usług zostały zapisane.", [
-          { text: "OK" },
-        ]);
-
-        // Po zapisie danych, oblicz emisję
-        await calculateEventEmission(eventId); // Wywołanie funkcji obliczającej emisję
-      }
-    } catch (error) {
-      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
-    }
-  };
-
-  // Funkcja do obliczania emisji
-  const calculateEventEmission = async (eventId) => {
+  const calculateEmission = async (userId) => {
     try {
       const response = await fetch(
-        `https://co2unter-hackyeah2024-backend.onrender.com/events/${eventId}/calculate`,
+        `https://co2unter-hackyeah2024-backend.onrender.com/data/users/${userId}/actions/calculate`,
         {
-          method: "POST",
+          method: 'GET',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }
       );
 
-      console.log(response);
-
       if (!response.ok) {
-        throw new Error("Błąd podczas obliczania emisji");
+        throw new Error('Failed to calculate emissions');
       }
 
       const result = await response.json();
-      Alert.alert("Emisja obliczona!", `Emisja: ${result.emission}`, [
-        { text: "OK" },
-      ]);
+      setEmissionResult(result);
     } catch (error) {
-      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
+      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const formData = {
+      vehicleType,
+      fuelType,
+      distance,
+      averageConsumption,
+      passengers,
+      timePeriod,
+    };
+
+    try {
+      let response;
+
+      if (userId && await checkUserExists(userId)) {
+        // Użytkownik istnieje, aktualizujemy dane
+        response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/user/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update the form');
+        }
+
+      } else {
+        // Użytkownik nie istnieje, tworzymy nowego
+        response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to submit the form');
+        }
+
+        const result = await response.json();
+        const newUserId = result._id;
+        await AsyncStorage.setItem('userId', newUserId);
+        setUserId(newUserId);
+        Alert.alert('Sukces!', 'Dane formularza zostały przesłane.', [{ text: 'OK' }]);
+      }
+
+      // Resetowanie formularza
+      setVehicleType('');
+      setFuelType('');
+      setDistance('');
+      setAverageConsumption('');
+      setPassengers('');
+      setTimePeriod('');
+
+      // Oblicz emisję dla użytkownika
+      calculateEmission(userId || newUserId);
+
+      // Wywołanie funkcji przekazanej przez rodzica
+      if (onSubmit) {
+        onSubmit(userId);
+      }
+
+    } catch (error) {
+      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Service Sector Form</Text>
-
-      {/* Wyświetlenie userId */}
-      {userId && <Text style={styles.userIdText}>User ID: {userId}</Text>}
+      <Text style={styles.title}>Transport Form</Text>
 
       <TextInput
-        placeholder="Częstotliwość jedzenia na zewnątrz"
-        value={eatingOutFrequency}
-        onChangeText={setEatingOutFrequency}
+        placeholder="Rodzaj pojazdu"
+        value={vehicleType}
+        onChangeText={setVehicleType}
+        style={styles.input}
+      />
+
+      <Picker
+        selectedValue={fuelType}
+        onValueChange={(itemValue) => setFuelType(itemValue)}
+        style={styles.input}
+      >
+        <Picker.Item label="Wybierz typ paliwa" value="" />
+        <Picker.Item label="Benzyna" value="gasoline" />
+        <Picker.Item label="Diesel" value="diesel" />
+        <Picker.Item label="Elektryczny" value="electric" />
+      </Picker>
+
+      <TextInput
+        placeholder="Przebyty dystans (km)"
+        value={distance}
+        onChangeText={setDistance}
         keyboardType="numeric"
         style={styles.input}
       />
 
       <TextInput
-        placeholder="Używanie jednorazowych naczyń"
-        value={useOfDisposableUtensils}
-        onChangeText={setUseOfDisposableUtensils}
-        style={styles.input}
-      />
-
-      <TextInput
-        placeholder="Częstotliwość korzystania z hoteli"
-        value={hotelUsageFrequency}
-        onChangeText={setHotelUsageFrequency}
+        placeholder="Średnie spalanie (l/100km)"
+        value={averageConsumption}
+        onChangeText={setAverageConsumption}
         keyboardType="numeric"
         style={styles.input}
       />
 
       <TextInput
-        placeholder="Częstotliwość zakupów"
-        value={shoppingFrequency}
-        onChangeText={setShoppingFrequency}
+        placeholder="Liczba pasażerów"
+        value={passengers}
+        onChangeText={setPassengers}
         keyboardType="numeric"
         style={styles.input}
       />
+
+      <Picker
+        selectedValue={timePeriod}
+        onValueChange={(itemValue) => setTimePeriod(itemValue)}
+        style={styles.input}
+      >
+        <Picker.Item label="Wybierz okres czasu" value="" />
+        <Picker.Item label="1 dzień" value="1dzien" />
+        <Picker.Item label="1 tydzień" value="1tydzien" />
+        <Picker.Item label="1 miesiąc" value="1miesiac" />
+      </Picker>
 
       <Button title="Submit" onPress={handleSubmit} />
+
+      {userId && (
+        <Text style={styles.title}>Twoje ID: {userId}</Text>
+      )}
+
+      {/* Wyświetlanie wyniku emisji, jeśli dostępny */}
+      {emissionResult && (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultTitle}>Wynik emisji:</Text>
+          <Text>Twoja emisja: {emissionResult.yourEmission} kg CO2</Text>
+          <Text>Park: {emissionResult.park}</Text>
+          <Text>Sadzonek: {emissionResult.sadzonka}</Text>
+          <Text>Drzew liściastych: {emissionResult.drzewoL} drzew</Text>
+          <Text>Drzew iglastych: {emissionResult.drzewoI} drzew</Text>
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -188,7 +218,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
@@ -196,16 +226,21 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: "gray",
+    borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 15,
     paddingLeft: 10,
   },
-  userIdText: {
-    fontSize: 16,
-    marginBottom: 20,
-    color: "blue", // Styl dla lepszego wyróżnienia
+  resultContainer: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 5,
+  },
+  resultTitle: {
+    fontSize: 20,
+    marginBottom: 10,
   },
 });
 
-export default ServicesScreen;
+export default TransportForm;

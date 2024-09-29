@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, FlatList, ScrollView } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 
-const TransportForm = () => {
+const TransportForm = ({ onSubmit }) => {
   const [vehicleType, setVehicleType] = useState('');
   const [fuelType, setFuelType] = useState('');
   const [distance, setDistance] = useState('');
@@ -11,26 +11,7 @@ const TransportForm = () => {
   const [passengers, setPassengers] = useState('');
   const [timePeriod, setTimePeriod] = useState('');
   const [userId, setUserId] = useState(null);
-  const [users, setUsers] = useState([]);
-  const [emissionResults, setEmissionResults] = useState({}); // Używamy obiektu do przechowywania wyników emisji
-
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/users');
-      if (!response.ok) {
-        throw new Error('Błąd pobierania danych');
-      }
-      const data = await response.json();
-      setUsers(data);
-    } catch (error) {
-      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-    loadUserIdFromStorage();
-  }, []);
+  const [emissionResult, setEmissionResult] = useState(null); // Stan do przechowywania wyniku emisji
 
   const loadUserIdFromStorage = async () => {
     try {
@@ -43,38 +24,31 @@ const TransportForm = () => {
     }
   };
 
-  const saveUserIdToStorage = async (id) => {
-    try {
-      await AsyncStorage.setItem('userId', id);
-      setUserId(id);
-    } catch (error) {
-      console.error('Error saving user ID:', error);
-    }
-  };
+  useEffect(() => {
+    loadUserIdFromStorage();
+  }, []);
 
-  const handleCalculateEmission = async (userId) => {
+  const calculateEmission = async (userId) => {
     try {
       const response = await fetch(
         `https://co2unter-hackyeah2024-backend.onrender.com/data/users/${userId}/actions/calculate`,
         {
-          method: "GET",
+          method: 'GET',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to calculate emissions");
+        throw new Error('Failed to calculate emissions');
       }
 
       const result = await response.json();
-      setEmissionResults((prevResults) => ({
-        ...prevResults,
-        [userId]: result, // Przechowujemy wynik dla danego userId
-      }));
+      setEmissionResult(result); // Ustawienie wyniku emisji
+      console.log(result);
     } catch (error) {
-      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
+      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
     }
   };
 
@@ -90,10 +64,11 @@ const TransportForm = () => {
 
     try {
       let response;
+      let newUserId;
 
       if (userId) {
-        response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/user/${userId}`, {
-          method: 'PUT',
+        response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/users/${userId}/actions`, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -104,7 +79,7 @@ const TransportForm = () => {
           throw new Error('Failed to update the form');
         }
 
-        Alert.alert('Sukces!', 'Dane użytkownika zostały zaktualizowane.', [{ text: 'OK' }]);
+        // Alert.alert('Sukces!', 'Dane użytkownika zostały zaktualizowane.', [{ text: 'OK' }]);
       } else {
         response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/user', {
           method: 'POST',
@@ -119,17 +94,27 @@ const TransportForm = () => {
         }
 
         const result = await response.json();
-        const newUserId = result._id;
-        await saveUserIdToStorage(newUserId);
-        Alert.alert('Sukces!', 'Dane formularza zostały przesłane.', [{ text: 'OK' }]);
+        newUserId = result._id;
+        await AsyncStorage.setItem('userId', newUserId);
+        setUserId(newUserId);
+        // Alert.alert('Sukces!', 'Dane formularza zostały przesłane.', [{ text: 'OK' }]);
       }
 
+      // Resetowanie formularza
       setVehicleType('');
       setFuelType('');
       setDistance('');
       setAverageConsumption('');
       setPassengers('');
       setTimePeriod('');
+
+      // Oblicz emisję dla użytkownika
+      calculateEmission(userId || newUserId); // Obliczamy dla nowego użytkownika lub istniejącego
+
+      // Wywołanie funkcji przekazanej przez rodzica (aby zaktualizować dane użytkownika)
+      if (onSubmit) {
+        onSubmit(userId);
+      }
 
     } catch (error) {
       Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
@@ -199,40 +184,17 @@ const TransportForm = () => {
         <Text style={styles.title}>Twoje ID: {userId}</Text>
       )}
 
-      <Text style={styles.title}>Lista użytkowników:</Text>
-      <FlatList
-        data={users}
-        keyExtractor={(item) => item._id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.userItem}>
-            <Text>{item._id}</Text>
-            <Text>Rodzaj pojazdu: {item.vehicleType}</Text>
-            <Text>Typ paliwa: {item.fuelType}</Text>
-            <Text>Przebyty dystans: {item.distance} km</Text>
-            <Text>Średnie spalanie: {item.averageConsumption} l/100km</Text>
-            <Text>Liczba pasażerów: {item.passengers}</Text>
-
-            {/* Sprawdź, czy wynik emisji jest dostępny */}
-            {emissionResults[item._id] ? ( // Upewnij się, że wyświetlasz wynik dla danego użytkownika
-            <>
-              {/* <Text>Wynik emisji: {JSON.stringify(emissionResults[item._id])}</Text> // Wyświetlenie wyniku emisji */}
-              <Text>
-                Wynik emisji: {emissionResults[item._id].yourEmission} kg CO2,
-                Park: {emissionResults[item._id].park},
-                Sadzonek: {emissionResults[item._id].sadzonka}
-                Drzew liściastych: {emissionResults[item._id].drzewoL} drzew,
-                Drzew iglastych: {emissionResults[item._id].drzewoI} drzew,
-              </Text>
-            </>
-            ) : (
-              <Button
-                title="Oblicz ślad"
-                onPress={() => handleCalculateEmission(item._id)} // Przekazanie ID użytkownika
-              />
-            )}
-          </View>
-        )}
-      />
+      {/* Wyświetlanie wyniku emisji, jeśli dostępny */}
+      {emissionResult && (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultTitle}>Wynik emisji:</Text>
+          <Text>Twoja emisja: {emissionResult.yourEmission} kg CO2</Text>
+          <Text>Park: {emissionResult.park}</Text>
+          <Text>Sadzonek: {emissionResult.sadzonka}</Text>
+          <Text>Drzew liściastych: {emissionResult.drzewoL} drzew</Text>
+          <Text>Drzew iglastych: {emissionResult.drzewoI} drzew</Text>
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -254,10 +216,15 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     paddingLeft: 10,
   },
-  userItem: {
+  resultContainer: {
+    marginTop: 20,
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    backgroundColor: '#f8f8f8',
+    borderRadius: 5,
+  },
+  resultTitle: {
+    fontSize: 20,
+    marginBottom: 10,
   },
 });
 
