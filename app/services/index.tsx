@@ -3,13 +3,10 @@ import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 're
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 
-const TransportForm = ({ onSubmit }) => {
-  const [vehicleType, setVehicleType] = useState('');
-  const [fuelType, setFuelType] = useState('');
-  const [distance, setDistance] = useState('');
-  const [averageConsumption, setAverageConsumption] = useState('');
-  const [passengers, setPassengers] = useState('');
-  const [timePeriod, setTimePeriod] = useState('');
+const ServiceSectorForm = ({ onSubmit }) => {
+  const [dietType, setDietType] = useState('');
+  const [typeOfMeal, setTypeOfMeal] = useState('');
+  const [shoppingFrequency, setShoppingFrequency] = useState('');
   const [userId, setUserId] = useState(null);
   const [emissionResult, setEmissionResult] = useState(null);
 
@@ -28,21 +25,21 @@ const TransportForm = ({ onSubmit }) => {
     loadUserIdFromStorage();
   }, []);
 
-  const checkUserExists = async (userId) => {
-    try {
-      const response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/user/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+  // const checkUserExists = async (userId) => {
+  //   try {
+  //     const response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/user/${userId}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
 
-      return response.ok; // Zwracamy true, jeśli użytkownik istnieje
-    } catch (error) {
-      Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
-      return false;
-    }
-  };
+  //     return response.ok; // Zwracamy true, jeśli użytkownik istnieje
+  //   } catch (error) {
+  //     Alert.alert('Błąd', error.message, [{ text: 'OK' }]);
+  //     return false;
+  //   }
+  // };
 
   const calculateEmission = async (userId) => {
     try {
@@ -69,21 +66,19 @@ const TransportForm = ({ onSubmit }) => {
 
   const handleSubmit = async () => {
     const formData = {
-      vehicleType,
-      fuelType,
-      distance,
-      averageConsumption,
-      passengers,
-      timePeriod,
+      dietType,
+      typeOfMeal,
+      shoppingFrequency,
     };
 
     try {
       let response;
+      let newUserId;
 
-      if (userId && await checkUserExists(userId)) {
+      if (userId) {
         // Użytkownik istnieje, aktualizujemy dane
-        response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/user/${userId}`, {
-          method: 'PUT',
+        response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/user/${userId}/actions`, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -109,19 +104,16 @@ const TransportForm = ({ onSubmit }) => {
         }
 
         const result = await response.json();
-        const newUserId = result._id;
+        newUserId = result._id;
         await AsyncStorage.setItem('userId', newUserId);
         setUserId(newUserId);
         Alert.alert('Sukces!', 'Dane formularza zostały przesłane.', [{ text: 'OK' }]);
       }
 
       // Resetowanie formularza
-      setVehicleType('');
-      setFuelType('');
-      setDistance('');
-      setAverageConsumption('');
-      setPassengers('');
-      setTimePeriod('');
+      setDietType('');
+      setTypeOfMeal('');
+      setShoppingFrequency('');
 
       // Oblicz emisję dla użytkownika
       calculateEmission(userId || newUserId);
@@ -138,59 +130,40 @@ const TransportForm = ({ onSubmit }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Transport Form</Text>
-
-      <TextInput
-        placeholder="Rodzaj pojazdu"
-        value={vehicleType}
-        onChangeText={setVehicleType}
-        style={styles.input}
-      />
+      <Text style={styles.title}>User Form</Text>
 
       <Picker
-        selectedValue={fuelType}
-        onValueChange={(itemValue) => setFuelType(itemValue)}
+        selectedValue={dietType}
+        onValueChange={(itemValue) => setDietType(itemValue)}
         style={styles.input}
       >
-        <Picker.Item label="Wybierz typ paliwa" value="" />
-        <Picker.Item label="Benzyna" value="gasoline" />
-        <Picker.Item label="Diesel" value="diesel" />
-        <Picker.Item label="Elektryczny" value="electric" />
+        <Picker.Item label="Wybierz typ diety" value="" />
+        <Picker.Item label="Wegańska" value="vegan" />
+        <Picker.Item label="Wegetariańska" value="vegetarian" />
+        <Picker.Item label="Mięsna" value="meat" />
+        <Picker.Item label="Inna" value="other" />
       </Picker>
 
-      <TextInput
-        placeholder="Przebyty dystans (km)"
-        value={distance}
-        onChangeText={setDistance}
-        keyboardType="numeric"
-        style={styles.input}
-      />
-
-      <TextInput
-        placeholder="Średnie spalanie (l/100km)"
-        value={averageConsumption}
-        onChangeText={setAverageConsumption}
-        keyboardType="numeric"
-        style={styles.input}
-      />
-
-      <TextInput
-        placeholder="Liczba pasażerów"
-        value={passengers}
-        onChangeText={setPassengers}
-        keyboardType="numeric"
-        style={styles.input}
-      />
-
       <Picker
-        selectedValue={timePeriod}
-        onValueChange={(itemValue) => setTimePeriod(itemValue)}
+        selectedValue={typeOfMeal}
+        onValueChange={(itemValue) => setTypeOfMeal(itemValue)}
         style={styles.input}
       >
-        <Picker.Item label="Wybierz okres czasu" value="" />
-        <Picker.Item label="1 dzień" value="1dzien" />
-        <Picker.Item label="1 tydzień" value="1tydzien" />
-        <Picker.Item label="1 miesiąc" value="1miesiac" />
+        <Picker.Item label="Wybierz typ posiłku" value="" />
+        <Picker.Item label="Śniadanie" value="breakfast" />
+        <Picker.Item label="Obiad" value="lunch" />
+        <Picker.Item label="Kolacja" value="dinner" />
+      </Picker>
+
+      <Picker
+        selectedValue={shoppingFrequency}
+        onValueChange={(itemValue) => setShoppingFrequency(itemValue)}
+        style={styles.input}
+      >
+        <Picker.Item label="Częstotliwość zakupów" value="" />
+        <Picker.Item label="Codziennie" value="daily" />
+        <Picker.Item label="Raz w tygodniu" value="weekly" />
+        <Picker.Item label="Raz w miesiącu" value="monthly" />
       </Picker>
 
       <Button title="Submit" onPress={handleSubmit} />
@@ -243,4 +216,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TransportForm;
+export default ServiceSectorForm;

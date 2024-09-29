@@ -29,7 +29,7 @@ export default function HomeScreen() {
   const fetchUserEmissionData = async () => {
     try {
       const response = await fetch(
-        "https://co2unter-hackyeah2024-backend.onrender.com/data/users/66f901e73d1586ec8af1c2db/actions/calculate"
+        "https://co2unter-hackyeah2024-backend.onrender.com/data/users/66f90e988f8a4fbe921bf6dc/actions/calculate"
       );
       if (!response.ok) {
         throw new Error("Błąd pobierania danych");
