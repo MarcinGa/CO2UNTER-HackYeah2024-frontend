@@ -1,5 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, Linking, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  FlatList,
+  Linking,
+  TouchableOpacity,
+} from "react-native";
 
 const PocketParks = () => {
   const [parksData, setParksData] = useState([]);
@@ -9,9 +17,11 @@ const PocketParks = () => {
   useEffect(() => {
     const fetchParksData = async () => {
       try {
-        const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/town-parks'); // Zaktualizuj z odpowiednim URL
+        const response = await fetch(
+          "https://co2unter-hackyeah2024-backend.onrender.com/data/small-parks"
+        ); // Zaktualizuj z odpowiednim URL
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data = await response.json();
         setParksData(data); // Przypisanie danych do stanu
@@ -45,6 +55,7 @@ const PocketParks = () => {
   return (
     <View style={styles.container}>
       <FlatList
+        style={{ width: "100%" }}
         data={parksData}
         keyExtractor={(item) => item._id} // Zakładając, że masz unikalne id
         renderItem={({ item }) => (
@@ -67,23 +78,23 @@ const PocketParks = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   parkItem: {
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    width: '100%',
+    borderBottomColor: "#ccc",
+    width: "100%",
   },
   parkName: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
   },
   link: {
-    color: 'blue',
+    color: "blue",
     marginTop: 5,
   },
 });

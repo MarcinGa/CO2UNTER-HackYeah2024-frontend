@@ -1,30 +1,29 @@
-import {
-  Image,
-  StyleSheet,
-  Platform,
-  View,
-  Alert,
-  ScrollView,
-} from "react-native";
+import { Image, StyleSheet, View, Alert, ScrollView } from "react-native";
 import { HelloWave } from "@/components/HelloWave";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { Text } from "@/components/ui/text";
-import { useEffect, useState } from "react";
 import { StaticImage } from "@/components/Images";
+import { useEffect, useState } from "react";
+
+interface EmissionData {
+  yourEmission: number;
+  park: string;
+  drzewoI: number;
+  stareDrzewoI: number;
+  drzewoL: number;
+  stareDrzewoL: number;
+  sadzonka: number;
+}
 
 export default function HomeScreen() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<EmissionData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const getRandomImagePath = () => {
     const randomNumber = Math.floor(Math.random() * 5) + 1;
-
     return `parks/${randomNumber}.jpg`;
   };
-
-  const image = getRandomImagePath();
 
   const fetchUserEmissionData = async () => {
     try {
@@ -36,11 +35,12 @@ export default function HomeScreen() {
       }
 
       const result = await response.json();
-      setData(result); // Zapisanie pobranych danych w stanie
-      setIsLoading(false); // Wyłączenie stanu ładowania
-    } catch (error) {
-      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
-      setIsLoading(false); // Upewnij się, że ładowanie przestanie się wyświetlać nawet w przypadku błędu
+      setData(result);
+      setIsLoading(false);
+    } catch (error: any) {
+      setErrorMessage(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -48,11 +48,16 @@ export default function HomeScreen() {
     fetchUserEmissionData();
   }, []);
 
+  const image = getRandomImagePath();
+
   if (isLoading) {
     return (
       <ThemedView style={styles.container}>
         <View style={styles.header}>
-          <Ionicons size={420} name="leaf" style={styles.headerImage} />
+          <Image
+            source={require("@/assets/images/partial-react-logo.png")}
+            style={styles.reactLogo}
+          />
         </View>
 
         <ThemedView style={styles.content}>
@@ -62,7 +67,7 @@ export default function HomeScreen() {
           </ThemedView>
 
           <View>
-            <Text style={styles.text}>Obliczanie...</Text>
+            <ThemedText style={styles.text}>Obliczanie...</ThemedText>
           </View>
         </ThemedView>
       </ThemedView>
@@ -72,7 +77,10 @@ export default function HomeScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Ionicons size={420} name="leaf" style={styles.headerImage} />
+        <Image
+          source={require("@/assets/images/partial-react-logo.png")}
+          style={styles.reactLogo}
+        />
       </View>
 
       <ThemedView style={styles.content}>
@@ -82,7 +90,9 @@ export default function HomeScreen() {
         </ThemedView>
 
         <View>
-          {data ? (
+          {errorMessage ? (
+            <ThemedText style={styles.text}>{errorMessage}</ThemedText>
+          ) : data ? (
             <>
               <View style={styles.infoContainer}>
                 <ThemedText style={styles.text}>
@@ -132,7 +142,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: 250,
+    height: 200,
     overflow: "hidden",
     backgroundColor: "#0e1d2a",
   },
@@ -152,21 +162,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
   reactLogo: {
     height: 178,
     width: 290,
     bottom: 0,
     left: 0,
-    position: "absolute",
-  },
-  headerImage: {
-    color: "#8ef06b",
-    bottom: -90,
-    left: -35,
     position: "absolute",
   },
 });
