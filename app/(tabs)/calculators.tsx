@@ -4,7 +4,6 @@ import { StyleSheet } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { Card } from "@/components/ui/card";
 import LinkCard from "@/components/LinkCard";
 
 export default function TabTwoScreen() {
@@ -16,27 +15,37 @@ export default function TabTwoScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Kalkulatory emisji CO2</ThemedText>
+        <ThemedText type="title">Kalkulatory mojej emisji CO2</ThemedText>
       </ThemedView>
-      <ThemedText>Wybierz jeden z Kalkulatorów</ThemedText>
+      <ThemedText style={styles.margin}>
+        Dotychczasowa emisja: 3kg CO2
+      </ThemedText>
+
+      <ThemedText>Kalkulatory:</ThemedText>
 
       <LinkCard
         route="/transport"
-        icon="car"
+        icon="car-outline"
         title="Transport"
         description="Oblicz emisję środków transportu"
       ></LinkCard>
       <LinkCard
-        route="/transport"
-        icon="car"
-        title="Transport"
-        description="Oblicz emisję środków transportu"
+        route="/diet"
+        icon="fast-food-outline"
+        title="Dieta"
+        description="Oblicz emisję spowodowaną dietą"
       ></LinkCard>
       <LinkCard
-        route="/transport"
-        icon="car"
-        title="Transport"
-        description="Oblicz emisję środków transportu"
+        route="/services"
+        icon="storefront-outline"
+        title="Usługi"
+        description="Oblicz emisję spowodowaną korzystaniem z usług"
+      ></LinkCard>
+      <LinkCard
+        route="/services"
+        icon="storefront-outline"
+        title="Wydarzenia"
+        description="Oblicz emisję wydarzeń kulturalnych"
       ></LinkCard>
     </ParallaxScrollView>
   );
@@ -52,5 +61,8 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     gap: 8,
+  },
+  margin: {
+    marginBottom: 24,
   },
 });

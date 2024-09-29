@@ -31,7 +31,7 @@ export default function LinkCard({
       <View className="flex flex-row gap-4">
         <Ionicons size={48} name={icon} />
 
-        <View className="flex flex-col gap-2">
+        <View className="flex flex-col gap-2 max-w-full">
           <CardTitle>{title}</CardTitle>
           <CardDescription>{description}</CardDescription>
         </View>
