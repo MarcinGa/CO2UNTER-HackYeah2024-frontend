@@ -7,7 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { Platform } from "react-native";
 import { NAV_THEME } from "~/lib/constants";
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { useColorScheme } from "~/hooks/useColorScheme";
 
 const LIGHT_THEME: Theme = {
   dark: false,
@@ -44,7 +44,7 @@ export default function RootLayout() {
       }
       const colorTheme = theme === "dark" ? "dark" : "light";
       if (colorTheme !== colorScheme) {
-        // setColorScheme(colorTheme);
+        setColorScheme(colorTheme);
 
         setIsColorSchemeLoaded(true);
         return;
@@ -61,8 +61,10 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <Stack />
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
     </ThemeProvider>
   );
 }

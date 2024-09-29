@@ -5,7 +5,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Card } from "@/components/ui/card";
-import LinkCard from "@/components/Card";
+import LinkCard from "@/components/LinkCard";
 
 export default function TabTwoScreen() {
   return (
@@ -20,7 +20,12 @@ export default function TabTwoScreen() {
       </ThemedView>
       <ThemedText>Wybierz jeden z Kalkulatorów</ThemedText>
 
-      <LinkCard></LinkCard>
+      <LinkCard
+        route="/transport"
+        icon="car"
+        title="Transport"
+        description="Oblicz emisję środków transportu"
+      ></LinkCard>
     </ParallaxScrollView>
   );
 }
