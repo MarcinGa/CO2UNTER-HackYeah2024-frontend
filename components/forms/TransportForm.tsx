@@ -39,7 +39,7 @@ const TransportForm = () => {
 
     try {
       const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/user', {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },

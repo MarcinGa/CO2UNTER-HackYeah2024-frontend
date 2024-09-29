@@ -17,6 +17,7 @@ const EventForm = () => {
   const [attendees, setAttendees] = useState("");
   const [eventId, setEventId] = useState(null); // Przechowuje ID wydarzenia
   const [events, setEvents] = useState([]); // Stan dla pobranych wydarzeń
+  const [emissionResult, setEmissionResult] = useState(null); // Przechowuje wynik emisji
 
   // Pobranie wydarzeń
   const fetchEvents = async () => {
@@ -107,6 +108,30 @@ const EventForm = () => {
     }
   };
 
+  const handleCalculateEmission = async (id) => {
+    try {
+      const response = await fetch(
+        `https://co2unter-hackyeah2024-backend.onrender.com/events/${id}/calculate`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to calculate event emission");
+      }
+
+      const result = await response.json();
+      setEmissionResult(result.emission); // Ustawienie wyniku emisji
+
+      Alert.alert("Sukces!", `Obliczona emisja dla wydarzenia: ${result.emission}`, [
+        { text: "OK" },
+      ]);
+    } catch (error) {
+      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Event Form</Text>
@@ -153,9 +178,19 @@ const EventForm = () => {
             <Text>Rodzaj: {item.type}</Text>
             <Text>Lokalizacja: {item.location}</Text>
             <Text>Uczestnicy: {item.attendees}</Text>
+            <Button
+              title="Oblicz emisję CO2"
+              onPress={() => handleCalculateEmission(item._id)}
+            />
           </View>
         )}
       />
+
+      {emissionResult && (
+        <Text style={styles.emissionResult}>
+          Wynik emisji: {emissionResult} kg CO2
+        </Text>
+      )}
     </ScrollView>
   );
 };
@@ -181,6 +216,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+  },
+  emissionResult: {
+    marginTop: 20,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "green",
   },
 });
 

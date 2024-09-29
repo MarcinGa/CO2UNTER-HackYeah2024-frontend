@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 
-const ServicesScreen = () => {
+const ServicesScreen = ({ eventId }) => { // Dodaj eventId jako prop
   const [userId, setUserId] = useState(null); // Przechowuje ID użytkownika
   const [eatingOutFrequency, setEatingOutFrequency] = useState("");
   const [useOfDisposableUtensils, setUseOfDisposableUtensils] = useState("");
@@ -38,7 +38,7 @@ const ServicesScreen = () => {
   const fetchServiceData = async (userId) => {
     try {
       const response = await fetch(
-        `https://co2unter-hackyeah2024-backend.onrender.com/users/${userId}/service-sector`
+        `https://co2unter-hackyeah2024-backend.onrender.com/data/users/${userId}/service-sector`
       );
       if (!response.ok) {
         throw new Error("Błąd podczas pobierania danych sektora usług");
@@ -68,12 +68,13 @@ const ServicesScreen = () => {
       if (userId) {
         // Jeśli istnieje userId, sprawdź, czy dane sektora usług są już zapisane
         const getResponse = await fetch(
-          `https://co2unter-hackyeah2024-backend.onrender.com/users/${userId}/service-sector`
+          `https://co2unter-hackyeah2024-backend.onrender.com/data/users/${userId}/service-sector`
         );
+        
         if (getResponse.ok) {
           // Dane sektora usług już istnieją, wykonaj PUT (aktualizacja)
           response = await fetch(
-            `https://co2unter-hackyeah2024-backend.onrender.com/users/${userId}/service-sector`,
+            `https://co2unter-hackyeah2024-backend.onrender.com/data/users/${userId}/service-sector`,
             {
               method: "PUT",
               headers: {
@@ -85,7 +86,7 @@ const ServicesScreen = () => {
         } else {
           // Dane nie istnieją, wykonaj POST (tworzenie)
           response = await fetch(
-            `https://co2unter-hackyeah2024-backend.onrender.com/users/${userId}/service-sector`,
+            `https://co2unter-hackyeah2024-backend.onrender.com/data/users/${userId}/service-sector`,
             {
               method: "POST",
               headers: {
@@ -103,7 +104,38 @@ const ServicesScreen = () => {
         Alert.alert("Sukces!", "Dane sektora usług zostały zapisane.", [
           { text: "OK" },
         ]);
+
+        // Po zapisie danych, oblicz emisję
+        await calculateEventEmission(eventId); // Wywołanie funkcji obliczającej emisję
       }
+    } catch (error) {
+      Alert.alert("Błąd", error.message, [{ text: "OK" }]);
+    }
+  };
+
+  // Funkcja do obliczania emisji
+  const calculateEventEmission = async (eventId) => {
+    try {
+      const response = await fetch(
+        `https://co2unter-hackyeah2024-backend.onrender.com/events/${eventId}/calculate`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response);
+
+      if (!response.ok) {
+        throw new Error("Błąd podczas obliczania emisji");
+      }
+
+      const result = await response.json();
+      Alert.alert("Emisja obliczona!", `Emisja: ${result.emission}`, [
+        { text: "OK" },
+      ]);
     } catch (error) {
       Alert.alert("Błąd", error.message, [{ text: "OK" }]);
     }
