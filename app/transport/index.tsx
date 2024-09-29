@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Picker, Alert, FlatList, ScrollView } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, FlatList, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import { Picker } from '@react-native-picker/picker';
 
 const TransportForm = () => {
   const [vehicleType, setVehicleType] = useState('');
@@ -15,7 +16,7 @@ const TransportForm = () => {
   // Funkcja do pobrania użytkowników (jeśli potrzebujesz pobierać listę użytkowników)
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:3000/data/users');
+      const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/users');
       if (!response.ok) {
         throw new Error('Błąd pobierania danych');
       }
@@ -68,7 +69,7 @@ const TransportForm = () => {
 
     try {
       // 1. Wysłanie danych formularza na endpoint /data/user
-      const response = await fetch('http://localhost:3000/data/user', {
+      const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -165,23 +166,6 @@ const TransportForm = () => {
       {userId && (
         <Text style={styles.title}>Twoje ID: {userId}</Text>
       )}
-
-      {/* Wyświetlenie listy użytkowników (jeśli potrzebujesz) */}
-      <Text style={styles.title}>Lista użytkowników:</Text>
-      <FlatList
-        data={users}
-        keyExtractor={(item) => item._id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.userItem}>
-            <Text>{item._id}</Text>
-            <Text>Rodzaj pojazdu: {item.vehicleType}</Text>
-            <Text>Typ paliwa: {item.fuelType}</Text>
-            <Text>Przebyty dystans: {item.distance} km</Text>
-            <Text>Średnie spalanie: {item.averageConsumption} l/100km</Text>
-            <Text>Liczba pasażerów: {item.passengers}</Text>
-          </View>
-        )}
-      />
     </ScrollView>
   );
 };

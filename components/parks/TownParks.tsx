@@ -9,7 +9,7 @@ const ParksCity = () => {
   useEffect(() => {
     const fetchCityParks = async () => {
       try {
-        const response = await fetch('http://localhost:3000/data/town-parks'); // Endpoint dla parków miejskich
+        const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/town-parks'); // Endpoint dla parków miejskich
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

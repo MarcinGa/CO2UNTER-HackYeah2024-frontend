@@ -12,7 +12,7 @@ const TransportForm = () => {
   // Funkcja do pobrania użytkowników
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:3000/data/users');
+      const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/users');
       if (!response.ok) {
         throw new Error('Błąd pobierania danych');
       }
@@ -38,7 +38,7 @@ const TransportForm = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/data/user', {
+      const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

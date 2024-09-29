@@ -11,31 +11,31 @@ const TownParkSearchScreen = () => {
   const [results, setResults] = useState([]);
 
   const handleSearchByName = async () => {
-    const response = await fetch(`http://localhost:3000/data/town-parks/by-name/${name}`);
+    const response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/town-parks/by-name/${name}`);
     const data = await response.json();
     setResults(data);
   };
 
   const handleSearchByStatus = async () => {
-    const response = await fetch(`http://localhost:3000/data/town-parks/by-status/${status}`);
+    const response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/town-parks/by-status/${status}`);
     const data = await response.json();
     setResults(data);
   };
 
   const handleSearchByDistrict = async () => {
-    const response = await fetch(`http://localhost:3000/data/town-parks/by-district/${district}`);
+    const response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/town-parks/by-district/${district}`);
     const data = await response.json();
     setResults(data);
   };
 
   const handleSearchByAccessibility = async () => {
-    const response = await fetch(`http://localhost:3000/data/town-parks/by-accessibility/${accessibility}`);
+    const response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/town-parks/by-accessibility/${accessibility}`);
     const data = await response.json();
     setResults(data);
   };
 
   const handleSearchByType = async () => {
-    const response = await fetch(`http://localhost:3000/data/town-parks/by-type/${type}`);
+    const response = await fetch(`https://co2unter-hackyeah2024-backend.onrender.com/data/town-parks/by-type/${type}`);
     const data = await response.json();
     setResults(data);
   };

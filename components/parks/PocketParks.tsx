@@ -9,7 +9,7 @@ const ParksPocket = () => {
   useEffect(() => {
     const fetchPocketParks = async () => {
       try {
-        const response = await fetch('http://localhost:3000/data/small-parks'); // Endpoint dla parków kieszonkowych
+        const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/small-parks'); // Endpoint dla parków kieszonkowych
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

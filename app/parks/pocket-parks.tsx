@@ -9,7 +9,7 @@ const PocketParks = () => {
   useEffect(() => {
     const fetchParksData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/data/small-parks'); // Zaktualizuj z odpowiednim URL
+        const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/small-parks'); // Zaktualizuj z odpowiednim URL
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
