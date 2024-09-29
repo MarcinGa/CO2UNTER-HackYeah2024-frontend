@@ -22,9 +22,9 @@ export default function HomeScreen() {
       </ThemedView>
 
       <Link href="/individual"><ThemedText type="link">Twoja produkcja CO2</ThemedText></Link>
-      <Link href="/convert"><ThemedText type="link">Konweruj CO2</ThemedText></Link>
+      {/* <Link href="/convert"><ThemedText type="link">Konweruj CO2</ThemedText></Link> */}
       <Link href="/parks"><ThemedText type="link">Parki</ThemedText></Link>
-      <Link href="/services"><ThemedText type="link">Services</ThemedText></Link>
+      <Link href="/services"><ThemedText type="link">Usługi</ThemedText></Link>
       <Link href="/transport/user-list"><ThemedText type="link">Transport</ThemedText></Link>
       <Link href="/events"><ThemedText type="link">Wydarzenia</ThemedText></Link>
     </ParallaxScrollView>
