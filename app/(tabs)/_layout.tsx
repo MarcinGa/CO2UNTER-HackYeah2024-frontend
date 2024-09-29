@@ -24,11 +24,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="calculators"
         options={{
-          title: 'Explore',
+          title: 'Emisja CO2',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'leaf' : 'leaf-outline'} color={color} />
           ),
         }}
       />

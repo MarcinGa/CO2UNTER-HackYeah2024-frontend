@@ -16,7 +16,7 @@ const TransportForm = () => {
   // Funkcja do pobrania użytkowników (jeśli potrzebujesz pobierać listę użytkowników)
   const fetchUsers = async () => {
     try {
-      const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/users');
+      const response = await fetch('http://localhost:3000/data/users');
       if (!response.ok) {
         throw new Error('Błąd pobierania danych');
       }
@@ -68,26 +68,46 @@ const TransportForm = () => {
     };
 
     try {
-      // 1. Wysłanie danych formularza na endpoint /data/user
-      const response = await fetch('https://co2unter-hackyeah2024-backend.onrender.com/data/user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      let response;
 
-      if (!response.ok) {
-        throw new Error('Failed to submit the form');
+      if (userId) {
+        // Jeśli istnieje userId, wyślij żądanie PUT do aktualizacji istniejącego użytkownika
+        response = await fetch(`http://localhost:3000/data/user/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update the form');
+        }
+
+        Alert.alert('Sukces!', 'Dane użytkownika zostały zaktualizowane.', [{ text: 'OK' }]);
+
+      } else {
+        // Jeśli nie ma userId, wyślij żądanie POST do stworzenia nowego użytkownika
+        response = await fetch('http://localhost:3000/data/user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to submit the form');
+        }
+
+        const result = await response.json();
+        const newUserId = result._id; // Otrzymane ID nowego użytkownika z odpowiedzi
+
+        // Zapisujemy ID nowego użytkownika w AsyncStorage
+        await saveUserIdToStorage(newUserId);
+
+        Alert.alert('Sukces!', 'Dane formularza zostały przesłane.', [{ text: 'OK' }]);
       }
-
-      const result = await response.json();
-      const newUserId = result._id; // Otrzymane ID nowego użytkownika z odpowiedzi
-
-      // Zapisujemy ID nowego użytkownika w AsyncStorage
-      await saveUserIdToStorage(newUserId);
-
-      Alert.alert('Sukces!', 'Dane formularza zostały przesłane.', [{ text: 'OK' }]);
 
       // Resetowanie wartości formularza
       setVehicleType('');
@@ -166,6 +186,23 @@ const TransportForm = () => {
       {userId && (
         <Text style={styles.title}>Twoje ID: {userId}</Text>
       )}
+
+      {/* Wyświetlenie listy użytkowników (jeśli potrzebujesz) */}
+      <Text style={styles.title}>Lista użytkowników:</Text>
+      <FlatList
+        data={users}
+        keyExtractor={(item) => item._id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.userItem}>
+            <Text>{item._id}</Text>
+            <Text>Rodzaj pojazdu: {item.vehicleType}</Text>
+            <Text>Typ paliwa: {item.fuelType}</Text>
+            <Text>Przebyty dystans: {item.distance} km</Text>
+            <Text>Średnie spalanie: {item.averageConsumption} l/100km</Text>
+            <Text>Liczba pasażerów: {item.passengers}</Text>
+          </View>
+        )}
+      />
     </ScrollView>
   );
 };
