@@ -19,7 +19,7 @@ export default function TabTwoScreen() {
           <HelloWave />
         </ThemedView>
 
-        <ThemedText>Kalkulatory:</ThemedText>
+        <ThemedText type="label">Kalkulatory:</ThemedText>
 
         <LinkCard
           route="/transport"
@@ -45,6 +45,36 @@ export default function TabTwoScreen() {
           title="Wydarzenia"
           description="Oblicz emisję wydarzeń kulturalnych"
         ></LinkCard>
+
+        <ThemedText type="label">Parki miejskie:</ThemedText>
+
+        <LinkCard
+          route="/parks/town-parks"
+          icon="leaf-outline"
+          title="Parki miejskie"
+          description="Znajdź parki miejskie"
+        />
+        <LinkCard
+          route="/parks/town-park-search"
+          icon="search-outline"
+          title="Znajdź park miejski"
+          description="Wyszukaj park miejski"
+        />
+
+        <ThemedText type="label">Parki kieszonkowe:</ThemedText>
+
+        <LinkCard
+          route="/parks/pocket-parks"
+          icon="leaf-outline"
+          title="Parki kieszonkowe"
+          description="Znajdź parki kieszonkowe"
+        />
+        <LinkCard
+          route="/parks/pocket-park-search"
+          icon="search-outline"
+          title="Znajdź park kieszonkowy"
+          description="Wyszukaj park kieszonkowy"
+        />
       </ThemedView>
     </ScrollView>
   );

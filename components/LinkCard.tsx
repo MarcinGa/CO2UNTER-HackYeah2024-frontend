@@ -26,7 +26,7 @@ export default function LinkCard({
 
   return (
     <TouchableOpacity
-      className="w-full max-w-sm p-4 bg-white rounded-lg border border-gray-300"
+      className="w-full max-w-full p-4 bg-white rounded-lg border border-gray-300"
       onPress={() => router.push(route)}
     >
       <View className="flex flex-row gap-4">
