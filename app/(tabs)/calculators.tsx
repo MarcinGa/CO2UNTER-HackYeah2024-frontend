@@ -42,8 +42,8 @@ export default function TabTwoScreen() {
         description="Oblicz emisję spowodowaną korzystaniem z usług"
       ></LinkCard>
       <LinkCard
-        route="/services"
-        icon="storefront-outline"
+        route="/events"
+        icon="flash-outline"
         title="Wydarzenia"
         description="Oblicz emisję wydarzeń kulturalnych"
       ></LinkCard>
