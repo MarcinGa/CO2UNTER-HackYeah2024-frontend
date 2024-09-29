@@ -49,3 +49,12 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Information
+Please install Expo Go on your phone, then use the terminal to navigate to the project:
+cd /CO2UNTER-HackYeah2024-frontend
+
+While in the folder, use:
+npx expo start
+
+On the device with Expo Go installed, turn on the camera and point it at the QR code that will appear in the terminal.
