@@ -26,6 +26,7 @@ export default function HomeScreen() {
       <Link href="/parks"><ThemedText type="link">Parki</ThemedText></Link>
       <Link href="/services"><ThemedText type="link">Services</ThemedText></Link>
       <Link href="/transport"><ThemedText type="link">Transport</ThemedText></Link>
+      <Link href="/events"><ThemedText type="link">Wydarzenia</ThemedText></Link>
     </ParallaxScrollView>
   );
 }
